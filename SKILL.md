@@ -1,7 +1,7 @@
 ---
 name: clawvoice-x402
 description: Voice and TTS for OpenClaw agents, with spoken replies, optional push-to-talk input, and a local Base wallet for x402 paid calls. Supports local, hosted, and hybrid voice modes with spend caps and safe wallet controls.
-version: 0.3.10
+version: 0.3.18
 homepage: https://forgemesh.io
 metadata:
   openclaw:
@@ -66,6 +66,26 @@ The installer may download Python packages and Supertonic model files. Get expli
 
 ## Agent Rules
 
+- User-facing name: ClawVoice. Preferred CLI: `clawvoice`. Compatibility aliases: `agentvoice`, `x402-agent-voice`.
+- If the user asks you to speak, say something out loud, use ClawVoice, use agent voice, or use `clawvoice`, call the CLI instead of only writing text.
+- If the user says "from now on", "always", "for this chat", or similar, treat ClawVoice as the session's voice output preference. For each future user-facing reply in that session, first prepare the reply, then run:
+
+```bash
+clawvoice speak "<spoken reply>"
+```
+
+- For long answers, speak a short natural summary and still write the full answer in chat. Do not try to read huge code blocks, logs, diffs, tables, JSON payloads, or command output aloud.
+- Do not speak secrets, private keys, wallet recovery material, API keys, access tokens, or unmasked sensitive values. If a reply contains sensitive content, write it only and explain that it should not be read aloud.
+- If a one-off user request only asks you to speak a specific sentence, speak that sentence once and do not enable session voice mode.
+- If the user asks you to stop talking, stop speaking, be quiet, mute, hush, or similar, immediately run:
+
+```bash
+clawvoice stop
+```
+
+Then stop using session voice mode until the user asks for spoken replies again.
+- During setup, users see an optional "Customize your agent's voice" step. Options are voice ID, language, hosted endpoint tier, preset, mix, expression, expression level, and expression controls. Noninteractive setup supports `--voice`, `--lang`, `--tier`, `--preset`, `--mix`, `--expression`, `--level`, and repeated `--control name=value`.
+- If the user asks how to change the voice, language, hosted endpoint tier, preset, mix, expression, expression level, or expression controls, tell them to run `clawvoice voice` to see current options. Use `clawvoice voice <voice-id>` for voice, `clawvoice voice --lang <language-code>` for language, `clawvoice voice --tier <tier>` for hosted endpoint tier, `clawvoice voice --preset <preset-id>` for a preset, `clawvoice voice --mix <mix-id>` for a mix, `clawvoice voice --expression <expression-id> --level <0-1>` for expression, and `clawvoice voice --control <name=value>` for expression controls. Use `none` to clear preset, mix, expression, or level; use `clawvoice voice --clear-controls` to clear expression controls. Then test with `clawvoice speak "testing the new voice"`. Do not promise a specific voice catalog, mix catalog, preset catalog, expression catalog, expression-control catalog, or language list unless the local or hosted engine exposes one.
 - Treat the generated wallet as a small-balance hot wallet only.
 - Each fresh user profile gets a unique local wallet. Reinstalls reuse `~/.x402-agent-voice/wallet.json` unless the user intentionally resets local state.
 - Never share, print, upload, or commit `~/.x402-agent-voice/wallet.json`; it contains the private key.
@@ -75,22 +95,24 @@ The installer may download Python packages and Supertonic model files. Get expli
 - Never send the private key to ForgeMesh, OpenClaw, ClawHub, AgentCash, Poncho, or any remote API.
 - Ask before making any paid x402 call. `speak` enforces this itself: caps are checked against the receipt ledger (`~/.x402-agent-voice/spend.jsonl`) before signing, and `requireApproval` prompts unless `--approve` is passed.
 - Enforce `dailyCapUsd`, `perCallCapUsd`, and `forgemeshFeeUsd` from `~/.x402-agent-voice/config.json`.
-- Mic support (`mic.enabled` in config) is opt-in functionality for macOS/Linux and WSL2. `install-mic` asks before creating the local Python speech-to-text runtime and installing faster-whisper; `install-mic --yes` is the noninteractive approval path. It prints FFmpeg install instructions and never runs a system package manager. Do not claim native Windows push-to-talk is supported yet.
-- `listen` is push-to-talk: it records from the microphone until Enter, then transcribes locally with faster-whisper. Mic audio never leaves the machine; temporary recordings are deleted unless `--keep`.
-- `talk` is a push-to-talk conversation loop: listen → pipe transcript to `conversation.agentCommand` (words on stdin, reply on stdout) → speak the reply. `sessionCapUsd` disables hosted voice for the rest of the session once reached. Wake word and always-on listening are `coming_soon` — do not claim they exist.
+- Mic support (`mic.enabled` in config) is opt-in functionality for macOS/Linux and WSL2. To talk to the agent with the microphone, tell users to run `clawvoice install-mic` once, then `clawvoice talk`. `install-mic` asks before creating the local Python speech-to-text runtime and installing faster-whisper; `install-mic --yes` is the noninteractive approval path. It prints FFmpeg install instructions and never runs a system package manager. Do not claim native Windows push-to-talk is supported yet. If local voice output is not installed, hosted voice can still speak replies when the wallet is funded.
+- `listen` is push-to-talk: it records from the microphone until the user presses Enter, then transcribes locally with faster-whisper. Mic audio never leaves the machine; temporary recordings are deleted unless `--keep`.
+- `talk` is a terminal push-to-talk conversation loop: start `clawvoice talk`, speak normally, press Enter when done talking, pipe transcript to `conversation.agentCommand` (words on stdin, reply on stdout), then speak the reply. `sessionCapUsd` disables hosted voice for the rest of the session once reached. Wake word, always-on listening, and hold-to-talk hotkeys are `coming_soon` — do not claim they exist.
 - Default ForgeMesh fee policy is `$0.005` per successful paid x402 call where ForgeMesh provides payment compatibility, hosted voice fallback, routing, receipt logging, or discovery normalization.
 
 ## Commands
 
 ```bash
-node bin/x402-agent-voice.js init [--mode local|hosted|hybrid] [--mic] [--yes]
+node bin/x402-agent-voice.js init [--mode local|hosted|hybrid] [--mic] [--yes] [--voice M1] [--lang en] [--tier base] [--preset id] [--mix id] [--expression id] [--level 0.7] [--control name=value]
 node bin/x402-agent-voice.js speak "text" [--out file.wav] [--approve] [--no-play]
+node bin/x402-agent-voice.js stop
 node bin/x402-agent-voice.js listen [--seconds N] [--file audio.wav] [--model base] [--keep]
 node bin/x402-agent-voice.js talk [--agent "claude -p"] [--approve] [--model base]
 node bin/x402-agent-voice.js wallet
 node bin/x402-agent-voice.js balance
 node bin/x402-agent-voice.js withdraw --to 0xYourWallet --amount all|N [--yes]
 node bin/x402-agent-voice.js products
+node bin/x402-agent-voice.js voice [voice-id] [--lang code] [--tier tier] [--preset id] [--mix id] [--expression id] [--level 0.7] [--control name=value] [--clear-controls]
 node bin/x402-agent-voice.js voice-check
 node bin/x402-agent-voice.js voice-serve
 node bin/x402-agent-voice.js voice-stop

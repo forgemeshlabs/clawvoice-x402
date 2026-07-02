@@ -1,7 +1,7 @@
 {
   "name": "clawvoice-x402",
   "displayName": "ClawVoice Agent Voice + TTS",
-  "version": "0.3.10",
+  "version": "0.3.18",
   "description": "Voice and TTS for OpenClaw agents, with spoken replies, optional push-to-talk input, and a local Base wallet for x402 paid calls.",
   "homepage": "https://forgemesh.io",
   "author": "clawdbotworker",
@@ -11,6 +11,7 @@
   "category": "voice",
   "tags": [
     "voice",
+    "agentvoice",
     "clawvoice",
     "openclaw-voice",
     "openclaw-agent-voice",

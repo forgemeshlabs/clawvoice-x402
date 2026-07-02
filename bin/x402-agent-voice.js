@@ -12,14 +12,16 @@ function usage() {
   console.log(`ClawVoice by ForgeMesh Labs — Voice and TTS controls for OpenClaw agents
 
 Usage:
-  clawvoice init [--mode local|hosted|hybrid] [--mic] [--yes]
+  clawvoice init [--mode local|hosted|hybrid] [--mic] [--yes] [--voice M1] [--lang en] [--tier base] [--preset id] [--mix id] [--expression id] [--level 0.7] [--control name=value]
   clawvoice speak "text to say" [--out file.wav] [--approve] [--no-play]
+  clawvoice stop
   clawvoice listen [--seconds N] [--file audio.wav] [--model base] [--keep]
   clawvoice talk [--agent "claude -p"] [--approve] [--model base]
   clawvoice wallet
   clawvoice balance
   clawvoice withdraw --to 0xYourWallet --amount all|N [--yes]
   clawvoice products
+  clawvoice voice [voice-id] [--lang code] [--tier tier] [--preset id] [--mix id] [--expression id] [--level 0.7] [--control name=value] [--clear-controls]
   clawvoice config
   clawvoice voice-check
   clawvoice voice-serve | voice-stop
@@ -33,7 +35,7 @@ listen is push-to-talk: recording starts immediately and stops when you press En
 talk is a full conversation loop: talk -> agent replies out loud, until you say exit.
 Wake word and always-on listening: coming soon.
 
-Compatibility alias: x402-agent-voice`);
+Aliases: clawvoice, agentvoice, x402-agent-voice`);
 }
 
 function walletCmd() {
@@ -71,15 +73,32 @@ function productsCmd() {
 async function voiceCheckCmd() {
   const { cliInstalled, serverHealthy } = require("../lib/tts-local");
   const { micStatus } = require("../lib/mic");
+  const { formatVersion, probePython } = require("../lib/python");
   const config = loadConfig();
   const serverUrl = config?.localVoice?.serverUrl || paths.DEFAULT_LOCAL_SERVER_URL;
   const mic = micStatus();
+  const python = probePython();
 
   console.log(
     JSON.stringify(
       {
         node: process.version,
         python3: commandExists("python3"),
+        localVoicePython: python.selected
+          ? {
+              bin: python.selected,
+              version: formatVersion(
+                (python.override || python.candidates.find((candidate) => candidate.bin === python.selected))?.version,
+              ),
+            }
+          : null,
+        pythonProbe: python.override
+          ? [{ bin: python.override.bin, version: formatVersion(python.override.version), compatible: python.override.compatible }]
+          : python.candidates.map((candidate) => ({
+              bin: candidate.bin,
+              version: formatVersion(candidate.version),
+              compatible: candidate.compatible,
+            })),
         mode: config?.mode || null,
         configExists: fs.existsSync(paths.CONFIG_PATH),
         walletExists: fs.existsSync(paths.WALLET_PATH),
@@ -123,6 +142,9 @@ async function main() {
       const { text, opts } = parseSpeakArgs(args);
       return require("../lib/speak").speak(text, opts);
     }
+    case "stop":
+    case "silence":
+      return require("../lib/playback").stopPlayback();
     case "wallet":
       return walletCmd();
     case "balance":
@@ -131,6 +153,8 @@ async function main() {
       return require("../lib/withdraw").withdraw(args);
     case "products":
       return productsCmd();
+    case "voice":
+      return require("../lib/voice").voice(args);
     case "config":
       return configCmd();
     case "voice-check":

@@ -6,7 +6,7 @@ ClawVoice by ForgeMesh Labs gives OpenClaw agents voice output, optional push-to
 
 Package name: `@forgemeshlabs/x402-agent-voice`
 
-Commands: `clawvoice` or `x402-agent-voice`
+Commands: `clawvoice`, `agentvoice`, or `x402-agent-voice`
 
 Homepage: https://forgemesh.io
 
@@ -29,7 +29,7 @@ Search terms: ClawVoice, OpenClaw Voice, OpenClaw Agent Voice, AI Voice, Agent V
 From the release tarball:
 
 ```bash
-npm install -g ./forgemeshlabs-x402-agent-voice-0.3.10.tgz
+npm install -g ./forgemeshlabs-x402-agent-voice-0.3.18.tgz
 ```
 
 Then run setup:
@@ -42,6 +42,12 @@ Use hosted mode if you do not want local voice setup:
 
 ```bash
 clawvoice init --mode hosted
+```
+
+Short aliases also work:
+
+```bash
+agentvoice init --mode hybrid --mic
 ```
 
 The old command still works:
@@ -62,6 +68,38 @@ openclaw gateway restart
 
 Use the restart command your OpenClaw install supports if it differs. The symlink keeps future `npm update -g @forgemeshlabs/x402-agent-voice` updates connected to the same skill registration.
 
+## Make Your Agent Speak Replies
+
+ClawVoice is a speech tool, not an automatic replacement for OpenClaw's chat renderer. Your agent speaks when it calls the CLI.
+
+For one reply:
+
+```text
+Use ClawVoice to say "hello, my agent voice is working"
+```
+
+For the rest of a chat session:
+
+```text
+Use ClawVoice to speak your responses out loud from now on.
+```
+
+After that instruction, the agent should call `clawvoice speak "<reply>"` for normal user-facing replies. Long answers should be summarized aloud and written fully in chat.
+
+To stop current playback:
+
+```text
+Stop talking.
+```
+
+The agent should run:
+
+```bash
+clawvoice stop
+```
+
+That stops the current ClawVoice audio and disables session voice mode until you ask for spoken replies again.
+
 ## What Setup Does
 
 Setup asks how your agent should speak:
@@ -80,14 +118,146 @@ Each machine, container, or user profile gets its own wallet unless you delibera
 
 ```bash
 clawvoice voice-check
+clawvoice stop
 clawvoice wallet
 clawvoice balance
 clawvoice withdraw --to 0xYourWallet --amount all
 clawvoice products
+clawvoice voice
 clawvoice speak "hello world"
 ```
 
 `wallet` shows the public address, chain, token, and spend policy. It does not show the private key.
+
+## Customize Your Agent's Voice
+
+Setup includes an optional **Customize your agent's voice** step. It lets you choose:
+
+- Voice ID
+- Language
+- Hosted endpoint tier
+- Preset
+- Mix
+- Expression
+- Expression level
+- Expression controls
+
+You can also set those options during noninteractive setup:
+
+```bash
+clawvoice init --mode hybrid --mic --voice M1 --lang en --tier base --preset calm --mix narrator --expression cheerful --level 0.7 --control speed=1.1
+```
+
+Check the current voice options:
+
+```bash
+clawvoice voice
+```
+
+Set a voice ID:
+
+```bash
+clawvoice voice M1
+```
+
+Set a language code:
+
+```bash
+clawvoice voice --lang es
+```
+
+Set a hosted endpoint tier:
+
+```bash
+clawvoice voice --tier pro
+```
+
+Set a preset or mix:
+
+```bash
+clawvoice voice --preset calm
+clawvoice voice --mix narrator
+```
+
+Set expression and intensity:
+
+```bash
+clawvoice voice --expression cheerful --level 0.7
+```
+
+Set expression controls:
+
+```bash
+clawvoice voice --control speed=1.1 --control pitch=0.2
+```
+
+Set everything at once:
+
+```bash
+clawvoice voice --voice F1 --lang fr --tier base --preset calm --mix narrator --expression cheerful --level 0.7 --control speed=1.1
+```
+
+Clear a preset, mix, expression, or level:
+
+```bash
+clawvoice voice --preset none
+clawvoice voice --mix none
+clawvoice voice --expression none
+clawvoice voice --level none
+clawvoice voice --clear-controls
+```
+
+List the built-in language guide:
+
+```bash
+clawvoice voice --languages
+```
+
+Then test it:
+
+```bash
+clawvoice speak "testing the new voice"
+```
+
+Voice IDs, language codes, endpoint tiers, presets, mixes, expressions, expression levels, and expression controls depend on the active local engine or hosted voice service. Defaults are `M1`, `en`, `base`, no preset, no mix, no expression, no level, and no expression controls.
+
+### Global Language Guide
+
+Use `clawvoice voice --lang <code>` to set the language. The hosted service may support additional aliases; these are the built-in global-friendly codes and display names.
+
+| Code | Language | Localized display name |
+|---|---|---|
+| `en` | English | ClawVoice Agent Voice |
+| `es` | Español | ClawVoice Voz de agente |
+| `fr` | Français | ClawVoice Voix d'agent |
+| `de` | Deutsch | ClawVoice Agentenstimme |
+| `it` | Italiano | ClawVoice Voce agente |
+| `pt` | Português | ClawVoice Voz de agente |
+| `nl` | Nederlands | ClawVoice Agentstem |
+| `pl` | Polski | ClawVoice Głos agenta |
+| `cs` | Čeština | ClawVoice Hlas agenta |
+| `hu` | Magyar | ClawVoice Ügynökhang |
+| `ro` | Română | ClawVoice Vocea agentului |
+| `el` | Ελληνικά | ClawVoice Φωνή πράκτορα |
+| `sv` | Svenska | ClawVoice Agentröst |
+| `da` | Dansk | ClawVoice Agentstemme |
+| `fi` | Suomi | ClawVoice Agenttiääni |
+| `no` | Norsk | ClawVoice Agentstemme |
+| `ru` | Русский | ClawVoice Голос агента |
+| `uk` | Українська | ClawVoice Голос агента |
+| `tr` | Türkçe | ClawVoice Ajan sesi |
+| `ar` | العربية | ClawVoice صوت الوكيل |
+| `he` | עברית | ClawVoice קול סוכן |
+| `hi` | हिन्दी | ClawVoice एजेंट आवाज़ |
+| `bn` | বাংলা | ClawVoice এজেন্ট ভয়েস |
+| `id` | Bahasa Indonesia | ClawVoice Suara agen |
+| `ms` | Bahasa Melayu | ClawVoice Suara ejen |
+| `fil` | Filipino | ClawVoice Boses ng ahente |
+| `vi` | Tiếng Việt | ClawVoice Giọng nói tác nhân |
+| `th` | ไทย | ClawVoice เสียงเอเจนต์ |
+| `ja` | 日本語 | ClawVoice エージェント音声 |
+| `ko` | 한국어 | ClawVoice 에이전트 음성 |
+| `zh` | 中文 | ClawVoice 智能代理语音 |
 
 ## Recover Leftover Funds
 
@@ -113,9 +283,18 @@ Push-to-talk voice input is optional functionality.
 
 ```bash
 clawvoice install-mic
-clawvoice listen
-clawvoice talk --agent "claude -p"
+clawvoice talk
 ```
+
+To talk to your agent with the microphone, run `clawvoice install-mic` once, then start a conversation with `clawvoice talk`. If local voice output is not installed, ClawVoice can still speak through hosted voice when the wallet is funded.
+
+You can also transcribe one recording without starting a conversation:
+
+```bash
+clawvoice listen
+```
+
+There is no hold-to-talk hotkey yet. In the terminal flow, start `clawvoice talk`, speak normally, then press Enter when you are done talking. ClawVoice transcribes what you said, sends it to the agent, and speaks the reply.
 
 `listen` records from the microphone until you press Enter, then transcribes locally with faster-whisper.
 
@@ -179,7 +358,7 @@ To see what it would do first:
 clawvoice install-voice --dry-run
 ```
 
-Local voice may download Python packages and model files. It needs Python 3.9-3.12 (onnxruntime has no wheels for 3.13+); the installer probes `python3.12` through `python3`, or you can point `X402_VOICE_PYTHON` at a specific interpreter. Hosted mode avoids that setup and uses x402 payments instead.
+Local voice may download Python packages and model files. It needs Python 3.9-3.12 (onnxruntime has no wheels for 3.13+); the installer probes `python3.12`, `python3.11`, `python3.10`, `python3.9`, then `python3`, or you can point `X402_VOICE_PYTHON` at a specific interpreter. Hosted mode avoids that setup and uses x402 payments instead.
 
 ## Built-In ForgeMesh Products
 

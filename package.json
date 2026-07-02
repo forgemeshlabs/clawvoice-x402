@@ -1,10 +1,11 @@
 {
   "name": "@forgemeshlabs/x402-agent-voice",
-  "version": "0.3.10",
+  "version": "0.3.18",
   "description": "Voice and TTS output, optional push-to-talk input, and local x402 wallet controls for OpenClaw agents.",
   "homepage": "https://forgemesh.io",
   "main": "bin/x402-agent-voice.js",
   "bin": {
+    "agentvoice": "bin/x402-agent-voice.js",
     "clawvoice": "bin/x402-agent-voice.js",
     "x402-agent-voice": "bin/x402-agent-voice.js"
   },
@@ -20,7 +21,7 @@
   ],
   "scripts": {
     "check": "node --check bin/x402-agent-voice.js && for f in lib/*.js; do node --check $f; done",
-    "test": "npm run check && node bin/x402-agent-voice.js --help",
+    "test": "npm run check && node scripts/test-python-probe.js && node bin/x402-agent-voice.js stop && node bin/x402-agent-voice.js --help",
     "postinstall": "node scripts/postinstall.js",
     "release:pack": "node scripts/release-pack.js"
   },
@@ -29,6 +30,7 @@
   },
   "keywords": [
     "openclaw",
+    "agentvoice",
     "clawvoice",
     "openclaw-voice",
     "openclaw-agent-voice",
