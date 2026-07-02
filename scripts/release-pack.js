@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
+const pkg = require("../package.json");
 
 const root = path.resolve(__dirname, "..");
 const outDir = path.join(root, "dist", "release");
@@ -16,13 +17,8 @@ fs.mkdirSync(outDir, { recursive: true });
 run("npm", ["test"]);
 run("npm", ["pack", "--pack-destination", outDir]);
 
-const tarballs = fs
-  .readdirSync(outDir)
-  .filter((name) => name.endsWith(".tgz"))
-  .sort()
-  .map((name) => path.join(outDir, name));
-
-const latest = tarballs[tarballs.length - 1];
+const expectedName = `${pkg.name.replace("@", "").replace("/", "-")}-${pkg.version}.tgz`;
+const latest = path.join(outDir, expectedName);
 if (latest) {
   console.log("");
   console.log(`Release package ready: ${latest}`);

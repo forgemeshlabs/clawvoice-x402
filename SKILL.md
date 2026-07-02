@@ -1,7 +1,7 @@
 ---
 name: clawvoice-x402
-description: ClawVoice gives OpenClaw agents spoken replies, optional push-to-talk input, and a local Base wallet for x402 paid calls. It supports local, hosted, and hybrid voice modes with spend caps and safe wallet controls.
-version: 0.3.9
+description: Voice and TTS for OpenClaw agents, with spoken replies, optional push-to-talk input, and a local Base wallet for x402 paid calls. Supports local, hosted, and hybrid voice modes with spend caps and safe wallet controls.
+version: 0.3.10
 homepage: https://forgemesh.io
 metadata:
   openclaw:
@@ -24,9 +24,9 @@ metadata:
       - poncho
 ---
 
-# ClawVoice
+# ClawVoice Agent Voice + TTS
 
-Display name: **ClawVoice by ForgeMesh Labs**
+Display name: **ClawVoice Agent Voice + TTS**
 
 Homepage: https://forgemesh.io
 
