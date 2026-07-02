@@ -29,7 +29,7 @@ Search terms: ClawVoice, OpenClaw Voice, OpenClaw Agent Voice, AI Voice, Agent V
 From the release tarball:
 
 ```bash
-npm install -g ./forgemeshlabs-x402-agent-voice-0.3.7.tgz
+npm install -g ./forgemeshlabs-x402-agent-voice-0.3.8.tgz
 ```
 
 Then run setup:
@@ -49,6 +49,18 @@ The old command still works:
 ```bash
 x402-agent-voice init --mode hybrid --mic
 ```
+
+## Register With OpenClaw
+
+Global npm installs are not automatically scanned by OpenClaw. To make ClawVoice appear in the OpenClaw Skills sidebar, link the installed package into your OpenClaw skills folder:
+
+```bash
+mkdir -p ~/.openclaw/skills
+ln -s "$(npm root -g)/@forgemeshlabs/x402-agent-voice" ~/.openclaw/skills/clawvoice-x402
+openclaw gateway restart
+```
+
+Use the restart command your OpenClaw install supports if it differs. The symlink keeps future `npm update -g @forgemeshlabs/x402-agent-voice` updates connected to the same skill registration.
 
 ## What Setup Does
 
@@ -167,7 +179,7 @@ To see what it would do first:
 clawvoice install-voice --dry-run
 ```
 
-Local voice may download Python packages and model files. Hosted mode avoids that setup and uses x402 payments instead.
+Local voice may download Python packages and model files. It needs Python 3.9-3.12 (onnxruntime has no wheels for 3.13+); the installer probes `python3.12` through `python3`, or you can point `X402_VOICE_PYTHON` at a specific interpreter. Hosted mode avoids that setup and uses x402 payments instead.
 
 ## Built-In ForgeMesh Products
 

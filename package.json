@@ -1,6 +1,6 @@
 {
   "name": "@forgemeshlabs/x402-agent-voice",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "ClawVoice by ForgeMesh Labs: AI voice and local x402 wallet capabilities for OpenClaw agents.",
   "homepage": "https://forgemesh.io",
   "main": "bin/x402-agent-voice.js",

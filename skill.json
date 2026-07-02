@@ -1,7 +1,7 @@
 {
   "name": "clawvoice-x402",
   "displayName": "ClawVoice by ForgeMesh Labs",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "AI voice and local x402 wallet skill for OpenClaw agents: local, hosted, or hybrid speech setup, spend caps, balance checks, optional push-to-talk, withdrawal, and paid hosted fallback.",
   "homepage": "https://forgemesh.io",
   "author": "clawdbotworker",

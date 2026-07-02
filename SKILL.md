@@ -1,7 +1,7 @@
 ---
 name: clawvoice-x402
 description: ClawVoice by ForgeMesh Labs. AI voice and local x402 wallet skill for OpenClaw agents. Use when a user wants ClawVoice, OpenClaw Voice, OpenClaw Agent Voice, AI voice, agent voice, x402 voice, local TTS, ForgeMesh Voice fallback, x402 wallet bootstrap, spend caps, AgentCash-compatible paid calls, or Poncho-ready x402 payment metadata.
-version: 0.3.7
+version: 0.3.8
 homepage: https://forgemesh.io
 metadata:
   openclaw:
