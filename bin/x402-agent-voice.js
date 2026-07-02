@@ -9,7 +9,7 @@ const { spentTodayUsd } = require("../lib/spend");
 const { commandExists } = require("../lib/mic");
 
 function usage() {
-  console.log(`ClawVoice by ForgeMesh Labs — AI voice and x402 wallet capabilities for OpenClaw agents
+  console.log(`ClawVoice by ForgeMesh Labs — voice and x402 wallet controls for OpenClaw agents
 
 Usage:
   clawvoice init [--mode local|hosted|hybrid] [--mic] [--yes]

@@ -29,7 +29,7 @@ Search terms: ClawVoice, OpenClaw Voice, OpenClaw Agent Voice, AI Voice, Agent V
 From the release tarball:
 
 ```bash
-npm install -g ./forgemeshlabs-x402-agent-voice-0.3.8.tgz
+npm install -g ./forgemeshlabs-x402-agent-voice-0.3.9.tgz
 ```
 
 Then run setup:
